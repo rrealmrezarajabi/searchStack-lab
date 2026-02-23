@@ -13,7 +13,7 @@ import Image from "next/image";
 
 const ProductsCard = ({ product }: { product: Product }) => {
   return (
-    <Card className="relative w-full overflow-hidden pt-0">
+    <Card className="relative h-full w-full overflow-hidden pt-0">
       <div className="relative aspect-video w-full">
         <Image
           src={product.image}
@@ -24,7 +24,7 @@ const ProductsCard = ({ product }: { product: Product }) => {
         />
       </div>
 
-      <CardHeader>
+      <CardHeader className="flex-1 content-start">
         <CardAction>
           {product.inStock ? (
             <Badge variant="secondary">In Stock</Badge>
@@ -35,7 +35,9 @@ const ProductsCard = ({ product }: { product: Product }) => {
 
         <CardTitle>{product.name}</CardTitle>
 
-        <CardDescription>{product.description}</CardDescription>
+        <CardDescription className="h-10 overflow-hidden">
+          {product.description}
+        </CardDescription>
         <Badge>{product.category}</Badge>
       </CardHeader>
 

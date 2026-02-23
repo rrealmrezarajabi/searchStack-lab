@@ -5,13 +5,47 @@ type PaginationProps = {
   pagination: PaginationType;
   category?: string;
   search?: string;
+  sortBy?: string;
+  order?: string;
+  limit?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  inStock?: string;
 };
 
-function buildPageHref(page: number, category?: string, search?: string) {
+type PageHrefParams = {
+  page: number;
+  category?: string;
+  search?: string;
+  sortBy?: string;
+  order?: string;
+  limit?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  inStock?: string;
+};
+
+function buildPageHref({
+  page,
+  category,
+  search,
+  sortBy,
+  order,
+  limit,
+  minPrice,
+  maxPrice,
+  inStock,
+}: PageHrefParams) {
   const params = new URLSearchParams();
 
   if (category) params.set("category", category);
   if (search) params.set("search", search);
+  if (sortBy) params.set("sortBy", sortBy);
+  if (order) params.set("order", order);
+  if (limit) params.set("limit", limit);
+  if (minPrice) params.set("minPrice", minPrice);
+  if (maxPrice) params.set("maxPrice", maxPrice);
+  if (inStock) params.set("inStock", inStock);
   if (page > 1) params.set("page", String(page));
 
   const queryString = params.toString();
@@ -22,6 +56,12 @@ export default function Pagination({
   pagination,
   category,
   search,
+  sortBy,
+  order,
+  limit,
+  minPrice,
+  maxPrice,
+  inStock,
 }: PaginationProps) {
   if (pagination.totalPages <= 1) return null;
 
@@ -45,7 +85,17 @@ export default function Pagination({
     <nav className="mt-6 flex flex-wrap items-center justify-center gap-2 border-t pt-4">
       {pagination.currentPage > 1 ? (
         <Link
-          href={buildPageHref(pagination.currentPage - 1, category, search)}
+          href={buildPageHref({
+            page: pagination.currentPage - 1,
+            category,
+            search,
+            sortBy,
+            order,
+            limit,
+            minPrice,
+            maxPrice,
+            inStock,
+          })}
           className="rounded-md border px-3 py-2 text-sm transition-colors hover:bg-muted"
         >
           Prev
@@ -62,7 +112,17 @@ export default function Pagination({
         return (
           <Link
             key={page}
-            href={buildPageHref(page, category, search)}
+            href={buildPageHref({
+              page,
+              category,
+              search,
+              sortBy,
+              order,
+              limit,
+              minPrice,
+              maxPrice,
+              inStock,
+            })}
             className={`rounded-md border px-3 py-2 text-sm transition-colors hover:bg-muted ${
               isActive ? "bg-foreground text-background hover:bg-foreground" : ""
             }`}
@@ -74,7 +134,17 @@ export default function Pagination({
 
       {pagination.currentPage < pagination.totalPages ? (
         <Link
-          href={buildPageHref(pagination.currentPage + 1, category, search)}
+          href={buildPageHref({
+            page: pagination.currentPage + 1,
+            category,
+            search,
+            sortBy,
+            order,
+            limit,
+            minPrice,
+            maxPrice,
+            inStock,
+          })}
           className="rounded-md border px-3 py-2 text-sm transition-colors hover:bg-muted"
         >
           Next

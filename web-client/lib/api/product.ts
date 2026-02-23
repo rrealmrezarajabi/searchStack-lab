@@ -16,6 +16,11 @@ export async function getProducts(
   if (params.search) qs.set("search", params.search);
   if (params.page) qs.set("page", String(params.page));
   if (params.limit) qs.set("limit", String(params.limit));
+  if (params.sortBy) qs.set("sortBy", params.sortBy);
+  if (params.order) qs.set("order", params.order);
+  if (params.minPrice !== undefined) qs.set("minPrice", String(params.minPrice));
+  if (params.maxPrice !== undefined) qs.set("maxPrice", String(params.maxPrice));
+  if (params.inStock) qs.set("inStock", "true");
 
   const queryString = qs.toString();
   const url = queryString

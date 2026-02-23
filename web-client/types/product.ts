@@ -26,6 +26,11 @@ export type ProductsQuery = {
   search?: string;
   page?: number;
   limit?: number;
+  sortBy?: "id" | "name" | "price" | "rating";
+  order?: "asc" | "desc";
+  minPrice?: number;
+  maxPrice?: number;
+  inStock?: boolean;
 };
 
 export type ProductsResponse = {

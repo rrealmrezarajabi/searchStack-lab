@@ -1,0 +1,468 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Products API",
+    "version": "1.0.0",
+    "description": "Simple products API with filtering, sorting, pagination and stats."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Meta"
+    },
+    {
+      "name": "Products"
+    },
+    {
+      "name": "Categories"
+    },
+    {
+      "name": "Stats"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["Meta"],
+        "summary": "API welcome",
+        "description": "Returns API welcome message and endpoint hints.",
+        "responses": {
+          "200": {
+            "description": "Welcome payload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WelcomeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api": {
+      "get": {
+        "tags": ["Meta"],
+        "summary": "API welcome",
+        "description": "Returns API welcome message and endpoint hints.",
+        "responses": {
+          "200": {
+            "description": "Welcome payload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WelcomeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "List products",
+        "description": "Returns products with optional search, filters, sorting, and pagination.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search text across name, description and category.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filter by category (case-insensitive).",
+            "schema": {
+              "type": "string",
+              "enum": ["Electronics", "Clothing", "Books", "Sports", "Home", "Beauty", "Toys", "Food"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number (default: 1).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page (default: 10, max: 100).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Field to sort by.",
+            "schema": {
+              "type": "string",
+              "enum": ["id", "name", "price", "rating", "category", "createdAt"],
+              "default": "id"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort order.",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "minPrice",
+            "in": "query",
+            "description": "Minimum product price.",
+            "schema": {
+              "type": "number",
+              "format": "float"
+            }
+          },
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "description": "Maximum product price.",
+            "schema": {
+              "type": "number",
+              "format": "float"
+            }
+          },
+          {
+            "name": "inStock",
+            "in": "query",
+            "description": "When true, only in-stock items are returned.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsListResponse"
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get product by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Numeric product ID.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductByIdResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "List categories",
+        "responses": {
+          "200": {
+            "description": "Category list with counts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoriesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/stats": {
+      "get": {
+        "tags": ["Stats"],
+        "summary": "Products statistics",
+        "responses": {
+          "200": {
+            "description": "Aggregated product statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/openapi.json": {
+      "get": {
+        "tags": ["Meta"],
+        "summary": "OpenAPI document",
+        "responses": {
+          "200": {
+            "description": "OpenAPI JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/docs": {
+      "get": {
+        "tags": ["Meta"],
+        "summary": "Swagger UI",
+        "responses": {
+          "200": {
+            "description": "Swagger UI HTML page",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "MethodNotAllowed": {
+        "description": "Method not allowed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "error": "Method Not Allowed"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": ["error"]
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "Wireless Headphones 1" },
+          "category": {
+            "type": "string",
+            "enum": ["Electronics", "Clothing", "Books", "Sports", "Home", "Beauty", "Toys", "Food"]
+          },
+          "price": { "type": "number", "format": "float", "example": 129.99 },
+          "rating": { "type": "number", "format": "float", "example": 4.5 },
+          "inStock": { "type": "boolean", "example": true },
+          "description": { "type": "string" },
+          "image": { "type": "string", "format": "uri" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["id", "name", "category", "price", "rating", "inStock", "description", "image", "createdAt"]
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "currentPage": { "type": "integer", "example": 1 },
+          "totalPages": { "type": "integer", "example": 20 },
+          "totalItems": { "type": "integer", "example": 200 },
+          "itemsPerPage": { "type": "integer", "example": 10 },
+          "hasNextPage": { "type": "boolean", "example": true },
+          "hasPrevPage": { "type": "boolean", "example": false },
+          "nextPage": { "type": "integer", "nullable": true, "example": 2 },
+          "prevPage": { "type": "integer", "nullable": true, "example": null }
+        },
+        "required": ["currentPage", "totalPages", "totalItems", "itemsPerPage", "hasNextPage", "hasPrevPage", "nextPage", "prevPage"]
+      },
+      "AppliedFilters": {
+        "type": "object",
+        "properties": {
+          "search": { "type": "string", "nullable": true, "example": "headphones" },
+          "category": { "type": "string", "nullable": true, "example": "Electronics" },
+          "minPrice": { "type": "string", "nullable": true, "example": "50" },
+          "maxPrice": { "type": "string", "nullable": true, "example": "200" },
+          "inStock": { "type": "string", "nullable": true, "example": "true" },
+          "sortBy": { "type": "string", "example": "price" },
+          "order": { "type": "string", "example": "asc" }
+        },
+        "required": ["search", "category", "minPrice", "maxPrice", "inStock", "sortBy", "order"]
+      },
+      "ProductsListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/AppliedFilters"
+          }
+        },
+        "required": ["data", "pagination", "filters"]
+      },
+      "ProductByIdResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Product"
+          }
+        },
+        "required": ["data"]
+      },
+      "CategoryCount": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "example": "Electronics" },
+          "count": { "type": "integer", "example": 25 }
+        },
+        "required": ["name", "count"]
+      },
+      "CategoriesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryCount"
+            }
+          }
+        },
+        "required": ["data"]
+      },
+      "CategoryStats": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string", "example": "Electronics" },
+          "count": { "type": "integer", "example": 25 }
+        },
+        "required": ["category", "count"]
+      },
+      "Stats": {
+        "type": "object",
+        "properties": {
+          "total": { "type": "integer", "example": 200 },
+          "inStock": { "type": "integer", "example": 160 },
+          "outOfStock": { "type": "integer", "example": 40 },
+          "avgPrice": { "type": "number", "format": "float", "example": 232.15 },
+          "minPrice": { "type": "number", "format": "float", "example": 10.12 },
+          "maxPrice": { "type": "number", "format": "float", "example": 509.45 },
+          "avgRating": { "type": "number", "format": "float", "example": 4.12 },
+          "byCategory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryStats"
+            }
+          }
+        },
+        "required": ["total", "inStock", "outOfStock", "avgPrice", "minPrice", "maxPrice", "avgRating", "byCategory"]
+      },
+      "StatsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Stats"
+          }
+        },
+        "required": ["data"]
+      },
+      "WelcomeResponse": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "endpoints": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "queryParams": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["message", "endpoints", "queryParams", "examples"]
+      }
+    }
+  }
+}

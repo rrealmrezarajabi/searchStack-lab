@@ -13,7 +13,7 @@ import Image from "next/image";
 
 const ProductsCard = ({ product }: { product: Product }) => {
   return (
-    <Card className="relative mx-auto w-full max-w-sm overflow-hidden pt-0">
+    <Card className="relative w-full overflow-hidden pt-0">
       <div className="relative aspect-video w-full">
         <Image
           src={product.image}
@@ -39,7 +39,7 @@ const ProductsCard = ({ product }: { product: Product }) => {
         <Badge>{product.category}</Badge>
       </CardHeader>
 
-      <CardFooter className="flex items-center justify-between">
+      <CardFooter className="flex items-center justify-between gap-3">
         {product.inStock ? (
           <span className="font-semibold ">${product.price.toFixed(2)}</span>
         ) : (
